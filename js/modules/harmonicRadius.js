@@ -1,4 +1,4 @@
-import { PRIME_BASIS } from "mathtools.js";
+import { PRIME_BASIS } from "./mathtools.js";
 
 /////////////////////////////////
 // Harmonic Radius in 11-limit //

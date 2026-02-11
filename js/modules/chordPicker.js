@@ -1,5 +1,5 @@
-import { harmonicRadius } from "harmonicRadius.js";
-import { ratioToMonzo } from "mathtools.js";
+import { harmonicRadius } from "./harmonicRadius.js";
+import { ratioToMonzo } from "./mathtools.js";
 
 /////////////////////////
 // Browser time values //
