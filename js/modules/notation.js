@@ -91,7 +91,7 @@ function createLabelText(
       x,
       y: yBaseline,
       "font-size": fontSizePx,
-      "font-family": "Plainsound Text",
+      "font-family": "Plainsound Sans",
       "text-anchor": "middle",
       fill: colour, // SVG fill controls text color [web:102]
     },
