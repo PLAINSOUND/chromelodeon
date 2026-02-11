@@ -1,9 +1,9 @@
-import { renderStaff, renderNotes, colours } from "./modules/notation.js";
-import { PARTCH } from "./modules/partch.js";
-import { chooseChordFromClock } from "./modules/chordpicker.js";
-import { createAudioEngine } from "./modules/audioEngine.js";
-import { createSandboxUI } from "./modules/sandboxUI.js";
-import { renderKeyboard73, createKeyboardUI } from "./modules/keyboardUI.js";
+import { renderStaff, renderNotes, colours } from "modules/notation.js";
+import { PARTCH } from "modules/partch.js";
+import { chooseChordFromClock } from "modules/chordpicker.js";
+import { createAudioEngine } from "modules/audioEngine.js";
+import { createSandboxUI } from "modules/sandboxUI.js";
+import { renderKeyboard73, createKeyboardUI } from "modules/keyboardUI.js";
 
 const notationSVG = document.getElementById("notation");
 const keyboardBar = document.getElementById("keyboardBar");
