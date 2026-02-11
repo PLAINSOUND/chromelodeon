@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=play_circle,stop_circle"
+    />
+    <script defer src="https://unpkg.com/tone@14.8.49/build/Tone.js"></script>
+    <script defer type="module" src="js/main.js?v=2026-02-11"></script>
+    <link rel="stylesheet" href="css/style.css?v=2026-02-11" />
+    <title>Chromelodeon</title>
+  </head>
+  <body>
+    <div class="controls">
+      <div class="buttons">
+        <button id="playButton">
+          <span class="material-symbols-outlined" id="icon">play_circle</span>
+        </button>
+      </div>
+      <h1>Chromelodeon</h1>
+    </div>
+    <div class="instruction">
+      Generate a chord of the moment
+      <button id="infoButton" type="button" aria-label="About Chromelodeon">
+        ?
+      </button>
+    </div>
+    <div id="notation"></div>
+    <div class="instruction">
+      Play each key and adjust its relative volume and timbre
+    </div>
+    <div id="keyboardBar"></div>
+    <div id="sandbox"></div>
+    <dialog id="infoDialog" aria-labelledby="infoTitle">
+      <h2 id="infoTitle">About Chromelodeon</h2>
+      <p>
+        Harry Partch was born in 1901 and died in 1974 at the age of 73. As it
+        happens, his Chromelodeon I – a pump organ tuned to his 43-tone just
+        intonation scale – had 73 keys.
+      </p>
+      <p>
+        <i>Chromelodeon</i> celebrates Partch’s life and work by sounding a
+        once-in-a-lifetime hexad (six-note chord). The very moment you press
+        play, the year, the month, the day, the hour, the minute and the second
+        are each used as parameters to select one of the 73 keys to play. In
+        other words, the app “samples” the clock at any given moment and uses
+        that moment as an ever-modulating anchor. Every second, a unique hexad
+        is possible.
+      </p>
+      <p>
+        The current year (considered as the corresponding point in the 73-year
+        cycle of Partch’s life since 1901) defines the first note of the hexad.
+        From there, the app constructs the remaining notes of the hexad
+        iteratively with each time component, beginning with the second and
+        working up to the month. All remaining available keys are considered and
+        ordered by Marc Sabat’s measure of <i>Harmonic Radius</i> with respect
+        to what has already been constructed. Then the current time components
+        acts like a pointer, selecting a particular tone within that ordering.
+        For example, if the minute is 15, the app selects the 15th item in the
+        sorted Harmonic Radius ordering it calculated for the remaining keys.
+      </p>
+      <p>
+        To sound the chord, you must activate each note by playing it on the
+        keyboard. A corresponding “bubble” will appear in the field below, which
+        you can drag vertically to change its volume and horizontally to change
+        its timbre by removing or adding partials. This allows you to control
+        the balance of the chord. You can mute a note by replaying its
+        corresponding key.
+      </p>
+      <p>
+        You can read more about Harmonic Radius
+        <a
+          href="https://ziva-hudba.info/chords-melodies-a-look-at-harmony-by-numbers-part-i-using-harmonic-radius-to-compare-rational-pitch-collections/"
+          target="_blank"
+          >here</a
+        >.
+      </p>
+
+      <form method="dialog">
+        <button id="closeInfo" value="close">Close</button>
+      </form>
+    </dialog>
+
+    <script>
+      const infoButton = document.getElementById("infoButton");
+      const infoDialog = document.getElementById("infoDialog");
+
+      infoButton.addEventListener("click", () => {
+        infoDialog.showModal();
+      });
+
+      infoDialog.addEventListener("click", (e) => {
+        // close when clicking the backdrop (outside the dialog box)
+        const rect = infoDialog.getBoundingClientRect();
+        const inside =
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom;
+
+        if (!inside) infoDialog.close();
+      });
+    </script>
+  </body>
+</html>

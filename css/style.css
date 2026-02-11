@@ -1,0 +1,176 @@
+@charset "UTF-8";
+@font-face {
+  font-family: "Plainsound Sans";
+  src: url("../fonts/PlainsoundSans-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Plainsound Sans";
+  src: url("../fonts/PlainsoundSans-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Plainsound Serif";
+  src: url("../fonts/PlainsoundSerif-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Plainsound Serif";
+  src: url("../fonts/PlainsoundSerif-Italic.otf") format("opentype");
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Bravura";
+  src: url("../fonts/Bravura.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  font-family: "Plainsound Sans", sans-serif;
+  background-color: #faf9f8;
+  padding: 0 4px 4px;
+  margin: 0 auto;
+  max-width: 860px;
+}
+
+h1 {
+  font-family: "Plainsound Sans", sans-serif;
+  font-weight: normal;
+  text-align: center;
+  font-size: 26px;
+  display: inline-block;
+}
+
+h2 {
+  font-weight: normal;
+  font-size: 22px;
+}
+
+.material-symbols-outlined {
+  font-size: 40px;
+}
+
+.controls {
+  text-align: center;
+}
+
+.instruction {
+  text-align: center;
+  font-family: "Plainsound Serif", serif;
+  font-style: italic;
+}
+
+.buttons {
+  padding-top: 16px;
+  text-align: center;
+  display: block;
+  margin-bottom: -16px;
+}
+.buttons button {
+  background-color: transparent;
+  border: none;
+  border-radius: 4px;
+  color: gray;
+}
+.buttons button:hover {
+  color: black;
+}
+
+#notation {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+/* Apply Bravura to SVG text */
+svg text.music {
+  font-family: "Bravura";
+  font-feature-settings: "kern" 0;
+}
+
+#keyboardBar {
+  padding-top: 16px;
+  width: 100%;
+  height: 60px; /* half of previous 120px */
+  display: block; /* stays in normal flow */
+}
+
+#keyboardBar svg {
+  display: block;
+  height: 100%;
+  width: 100%; /* keep viewBox proportions */
+  max-width: 100vw; /* don’t overflow the window */
+  margin: 0 auto; /* exactly centered */
+}
+
+#sandbox {
+  width: 100%;
+  height: 360px;
+  margin: 12px auto 0;
+  background: #fff;
+  position: relative;
+  touch-action: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.sandbox-bubble {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  position: absolute;
+  left: 0px;
+  top: 196px; /* near bottom by default */
+  cursor: grab;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sandbox-bubble.dragging {
+  cursor: grabbing;
+}
+
+#keyboardBar svg rect {
+  cursor: pointer;
+}
+
+#infoButton {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.15);
+  color: black;
+  cursor: pointer;
+}
+
+#infoDialog {
+  max-width: 500px;
+  width: min(500px, 92vw);
+  padding: 6px 18px 18px;
+  border: none;
+  border-radius: 14px;
+  background: white;
+  color: black;
+}
+#infoDialog p {
+  font-family: "Plainsound Serif", serif;
+}
+
+#infoDialog::backdrop {
+  background: rgba(0, 0, 0, 0.33);
+}
+
+#closeInfo {
+  font-family: "Plainsound Sans", sans-serif;
+  border: none;
+  border-radius: 6px;
+  background-color: 0, 0, 0, 0.15;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 4px 8px;
+  cursor: grab;
+}/*# sourceMappingURL=style.css.map */
