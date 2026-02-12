@@ -13,4 +13,5 @@ Read more about Harmonic Radius [here](https://ziva-hudba.info/chords-melodies-a
 Support our open access content [here](https://ko-fi.com/plainsound) (opens in a new tab).
 
 This work is licensed under a Creative Commons Attribution 4.0 International License. 
+
 © 2026 by Thomas Nicholson and Marc Sabat (Plainsound).
