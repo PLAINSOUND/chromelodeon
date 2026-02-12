@@ -1,5 +1,3 @@
-// modules/sandboxUI.js
-
 function clamp(v, a, b) {
   return Math.max(a, Math.min(b, v));
 }
@@ -15,14 +13,36 @@ function gainFromY(y01) {
   return clamp(y01, 0, 1);
 }
 
+function randomInRange(a, b) {
+  return a + Math.random() * (b - a);
+}
+
 export function createSandboxUI({ sandboxEl, onControlChange }) {
   // Map keyId -> bubble element
   const bubblesById = new Map();
+  const lastPosById = new Map();
   let activeNoteId = null;
 
   function sandboxSize() {
     const r = sandboxEl.getBoundingClientRect();
     return { w: r.width, h: r.height };
+  }
+
+  function randomizeBubble(keyId, colour, region = {}) {
+    const bubble = ensureBubble(keyId, colour);
+
+    const { w, h } = sandboxSize();
+    const bw = bubble.offsetWidth;
+    const bh = bubble.offsetHeight;
+
+    const x01 = randomInRange(region.xMin ?? 0.25, region.xMax ?? 0.75);
+    const y01 = randomInRange(region.yMin ?? 0.25, region.yMax ?? 0.75);
+
+    const xPx = x01 * Math.max(0, w - bw);
+    const yPx = (1 - y01) * Math.max(0, h - bh); // because your y01 is inverted
+
+    applyPositionToKey(String(keyId), xPx, yPx);
+    return { x01, y01 };
   }
 
   function applyPositionToKey(keyId, xPx, yPx) {
@@ -41,6 +61,7 @@ export function createSandboxUI({ sandboxEl, onControlChange }) {
 
     const x01 = w - bw <= 0 ? 0 : x / (w - bw);
     const y01 = h - bh <= 0 ? 0 : 1 - y / (h - bh);
+    lastPosById.set(String(keyId), { x01, y01 });
 
     onControlChange(String(keyId), {
       oscType: typeFromX(x01),
@@ -94,14 +115,23 @@ export function createSandboxUI({ sandboxEl, onControlChange }) {
       bubble = document.createElement("div");
       bubble.className = "sandbox-bubble";
       bubble.style.background = colour;
-
       sandboxEl.appendChild(bubble);
       bubblesById.set(k, bubble);
 
-      // place in middle
-      const xMid = (sandboxEl.clientWidth - bubble.offsetWidth) / 2;
-      const yMid = (sandboxEl.clientHeight - bubble.offsetHeight) / 2;
-      applyPositionToKey(k, xMid, yMid);
+      const saved = lastPosById.get(k);
+      const { w, h } = sandboxSize();
+      const bw = bubble.offsetWidth;
+      const bh = bubble.offsetHeight;
+
+      if (saved) {
+        const xPx = saved.x01 * Math.max(0, w - bw);
+        const yPx = (1 - saved.y01) * Math.max(0, h - bh);
+        applyPositionToKey(k, xPx, yPx);
+      } else {
+        const xMid = (sandboxEl.clientWidth - bubble.offsetWidth) / 2;
+        const yMid = (sandboxEl.clientHeight - bubble.offsetHeight) / 2;
+        applyPositionToKey(k, xMid, yMid);
+      }
 
       wireDrag(k, bubble);
     } else {
@@ -119,7 +149,9 @@ export function createSandboxUI({ sandboxEl, onControlChange }) {
     const bubble = bubblesById.get(k);
     if (bubble) bubble.remove();
     bubblesById.delete(k);
+
     if (activeNoteId === k) activeNoteId = null;
+    // Do NOT clear lastPosById here
   }
 
   function hasBubble(keyId) {
@@ -134,6 +166,7 @@ export function createSandboxUI({ sandboxEl, onControlChange }) {
 
   return {
     ensureBubble,
+    randomizeBubble,
     removeBubble,
     hasBubble,
     clear,

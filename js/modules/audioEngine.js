@@ -44,12 +44,10 @@ export function createAudioEngine() {
   }
 
   function prepareChordVoices(voiceSpecs) {
-    if (voices.length) stopAndDisposeAll();
-
+    // Don’t call stopAndDisposeAll() here; main.js already stops when toggling off.
     voices = voiceSpecs.map(({ keyId, freq }) => {
       const randomPan = (Math.random() * 2 - 1) * 0.75;
 
-      // keep pan constant; bubble movement does not affect it
       const panner = new Tone.Panner(randomPan).connect(masterGain);
 
       const ampEnv = new Tone.AmplitudeEnvelope({
@@ -72,31 +70,27 @@ export function createAudioEngine() {
         panner,
         running: false,
         active: false,
-        pan: randomPan,
-        // these are the “current sandbox state” for deterministic init
+        // These are controlled by sandbox UI (defaults will be overwritten)
+        gain: 0.5,
         oscType: "sawtooth8",
-        gain: 0.6, // placeholder until UI sets exact middle mapping
       };
     });
 
     prepared = true;
   }
 
-  // NEW: apply the exact sandbox-derived params to a voice
-  // Pass exactly the same values you compute during drag.
-  function setKeySandboxState(keyId, { oscType, gain } = {}) {
+  function setKeyControls(keyId, { oscType, gain } = {}) {
     const v = _findVoice(keyId);
     if (!v) return;
 
     if (oscType) {
       v.oscType = oscType;
-      v.osc.type = oscType; // oscillator timbre depends on type/partials [web:312]
+      v.osc.type = oscType;
     }
 
     if (typeof gain === "number") {
       v.gain = Math.max(0, Math.min(1, gain));
-      // If it's currently sounding, re-open envelope at same timbre but new level
-      if (v.active) v.ampEnv.triggerAttack(undefined, v.gain);
+      if (v.active) v.ampEnv.triggerAttack(undefined, v.gain); // velocity scaling [web:307]
     }
   }
 
@@ -107,14 +101,13 @@ export function createAudioEngine() {
     v.osc.frequency.value = v.freq;
 
     if (!v.running) {
-      // CRITICAL: ensure timbre+gain are already set (e.g. to “middle”) before attack
-      v.osc.type = v.oscType; // [web:312]
+      v.osc.type = v.oscType;
       v.osc.start();
       v.running = true;
     }
 
     v.active = true;
-    v.ampEnv.triggerAttack(undefined, v.gain);
+    v.ampEnv.triggerAttack(undefined, v.gain); // [web:307]
   }
 
   function deactivateKey(keyId) {
@@ -123,12 +116,22 @@ export function createAudioEngine() {
 
     v.active = false;
     v.ampEnv.triggerRelease();
-    // Do not stop oscillator here; envelope handles silence and avoids re-start quirks
+    // Do NOT stop the osc here; we want “all notes play” behavior to be stable.
   }
 
-  // Keep this as a non-sandbox direct override if you still want it
-  function setKeyControls(keyId, { oscType, gain } = {}) {
-    setKeySandboxState(keyId, { oscType, gain });
+  function startAllVoices() {
+    if (!prepared) return;
+
+    const now = Tone.now();
+    voices.forEach((v) => {
+      if (!v.running) {
+        v.osc.type = v.oscType;
+        v.osc.start(now);
+        v.running = true;
+      }
+      v.active = true;
+      v.ampEnv.triggerAttack(now, v.gain); // [web:307]
+    });
   }
 
   return {
@@ -138,7 +141,6 @@ export function createAudioEngine() {
     activateKey,
     deactivateKey,
     setKeyControls,
-    // expose the explicit sandbox setter
-    setKeySandboxState,
+    startAllVoices,
   };
 }

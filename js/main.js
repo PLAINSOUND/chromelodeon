@@ -103,6 +103,21 @@ playButton.addEventListener("click", async () => {
     });
 
     audio.prepareChordVoices(voiceSpecs);
+    // Create + randomize bubbles for all chord notes (middle 50% of x and y)
+    keyboardIndices.forEach((idx, i) => {
+      const keyId = String(idx);
+      const colour = colours[i % colours.length];
+      sandboxUI.randomizeBubble(keyId, colour, {
+        xMin: 0.25,
+        xMax: 0.75,
+        yMin: 0.25,
+        yMax: 0.75,
+      });
+    });
+
+    // Now that sandbox has pushed oscType/gain via onControlChange,
+    // start all voices together
+    audio.startAllVoices();
   } else {
     playIcon.textContent = "play_circle";
 
