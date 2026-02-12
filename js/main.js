@@ -60,6 +60,7 @@ playButton.addEventListener("click", async () => {
 
   if (!audio.isPrepared()) {
     playIcon.textContent = "stop_circle";
+    playButton.classList.add("is-playing");
 
     const { time, keyboardIndices } = chooseChordFromClock(PARTCH, 6);
 
@@ -120,6 +121,7 @@ playButton.addEventListener("click", async () => {
     audio.startAllVoices();
   } else {
     playIcon.textContent = "play_circle";
+    playButton.classList.remove("is-playing");
 
     // Stop everything and clear UI
     audio.stopAndDisposeAll();

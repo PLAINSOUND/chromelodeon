@@ -8,8 +8,8 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=play_circle,stop_circle"
     />
     <script defer src="https://unpkg.com/tone@14.8.49/build/Tone.js"></script>
-    <script defer type="module" src="js/main.js?v=2026-02-12"></script>
-    <link rel="stylesheet" href="css/style.css?v=2026-02-12" />
+    <script defer type="module" src="js/main.js?v=2026-02-12-1"></script>
+    <link rel="stylesheet" href="css/style.css?v=2026-02-12-1" />
     <title>Chromelodeon</title>
   </head>
   <body>
@@ -22,18 +22,22 @@
       <h1>Chromelodeon</h1>
     </div>
     <div class="instruction">
-      Generate a chord of the moment
+      Generate a hexad of the moment
       <button id="infoButton" type="button" aria-label="About Chromelodeon">
         ?
       </button>
     </div>
     <div id="notation"></div>
-    <div class="instruction">
-      Play each key and adjust its relative volume and timbre
-    </div>
+    <div class="instruction">Play keys to mute and unmute notes</div>
     <div id="keyboardBar"></div>
+    <div class="instruction">
+      Drag bubbles to adjust the balance of the chord
+    </div>
     <div id="sandbox"></div>
-    <dialog id="infoDialog" aria-labelledby="infoTitle">
+
+    <!-- Info dialog -->
+
+    <dialog id="infoDialog">
       <h2 id="infoTitle">About Chromelodeon</h2>
       <p>
         Harry Partch was born in 1901 and died in 1974 at the age of 73. As it
@@ -41,7 +45,7 @@
         intonation scale – had 73 keys.
       </p>
       <p>
-        <i>Chromelodeon</i> celebrates Partch’s life and work by sounding a
+        Chromelodeon celebrates Partch’s life and work by sounding a
         once-in-a-lifetime hexad (six-note chord). The very moment you press
         play, the year, the month, the day, the hour, the minute and the second
         are each used as parameters to select one of the 73 keys to play. In
@@ -55,33 +59,54 @@
         From there, the app constructs the remaining notes of the hexad
         iteratively with each time component, beginning with the second and
         working up to the month. All remaining available keys are considered and
-        ordered by Marc Sabat’s measure of <i>Harmonic Radius</i> with respect
-        to what has already been constructed. Then the current time components
-        act like a pointer, selecting a particular tone within that ordering.
-        For example, if the minute is 15, the app selects the 15th item in the
+        ordered by Marc Sabat’s measure of Harmonic Radius with respect to what
+        has already been constructed. Then the current time components act like
+        a pointer, selecting a particular tone within that ordering. For
+        example, if the minute is 15, the app selects the 15th item in the
         sorted Harmonic Radius ordering it calculated for the remaining keys.
       </p>
       <p>
-        To sound the chord, you must activate each note by playing it on the
-        keyboard. A corresponding “bubble” will appear in the field below, which
-        you can drag vertically to change its volume and horizontally to change
-        its timbre by removing or adding partials. This allows you to control
-        the balance of the chord. You can mute a note by replaying its
-        corresponding key.
+        After pressing play, a “bubble” corresponding to each note will appear
+        in the field below the keyboard. You can drag these bubbles vertically
+        to change their volume and horizontally to change their timbre by
+        removing or adding partials. This allows you to control the balance of
+        the chord. You can mute and unmute a note by “playing” its corresponding
+        key on the keyboard.
       </p>
       <p>
-        You can read more about Harmonic Radius
+        Read more about Harmonic Radius
         <a
           href="https://ziva-hudba.info/chords-melodies-a-look-at-harmony-by-numbers-part-i-using-harmonic-radius-to-compare-rational-pitch-collections/"
           target="_blank"
           >here</a
         >.
       </p>
+      <p>
+        Support our open access content
+        <a href="https://ko-fi.com/plainsound" target="_blank">here</a>.
+      </p>
+
+      <p>
+        This work is licensed under a Creative Commons Attribution 4.0
+        International License. © 2026 by Thomas Nicholson and Marc Sabat
+        (Plainsound).
+      </p>
 
       <form method="dialog">
-        <button id="closeInfo" value="close">Close</button>
+        <button id="closeInfo" autofocus value="close">Close</button>
       </form>
     </dialog>
+
+    <!-- Screen rotation mask -->
+
+    <div id="rotateHint" role="dialog" aria-live="polite">
+      <div class="rotateCard">
+        <div class="rotateTitle">Rotate your device</div>
+        <div class="rotateText">
+          On small devices, Chromelodeon is best used in landscape mode.
+        </div>
+      </div>
+    </div>
 
     <script>
       const infoButton = document.getElementById("infoButton");
@@ -102,6 +127,42 @@
 
         if (!inside) infoDialog.close();
       });
+
+      function shouldShowRotateHint() {
+        // treat “phone” as narrow screens
+        const isNarrow = window.matchMedia("(max-width: 600px)").matches;
+        const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+        return isNarrow && isPortrait;
+      }
+
+      function updateRotateHint() {
+        const el = document.getElementById("rotateHint");
+        if (!el) return;
+        el.style.display = shouldShowRotateHint() ? "block" : "none";
+      }
+
+      // Run once at start
+      updateRotateHint();
+
+      // React to size changes (covers rotation on many browsers)
+      window.addEventListener("resize", updateRotateHint);
+
+      // Preferred: Screen Orientation API
+      if (
+        screen.orientation &&
+        typeof screen.orientation.addEventListener === "function"
+      ) {
+        screen.orientation.addEventListener("change", updateRotateHint); // [web:481]
+      }
+
+      // Fallback: live media query listener
+      const mql = window.matchMedia("(orientation: portrait)");
+      if (typeof mql.addEventListener === "function") {
+        mql.addEventListener("change", updateRotateHint);
+      } else if (typeof mql.addListener === "function") {
+        // older Safari
+        mql.addListener(updateRotateHint);
+      }
     </script>
   </body>
 </html>
