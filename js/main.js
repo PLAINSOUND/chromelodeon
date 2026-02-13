@@ -1,4 +1,4 @@
-import { renderStaff, renderNotes, colours } from "./modules/notation.js";
+import { renderStaff, renderNotes, colours, coloursmuted } from "./modules/notation.js";
 import { PARTCH } from "./modules/partch.js";
 import { chooseChordFromClock } from "./modules/chordPicker.js";
 import { createAudioEngine } from "./modules/audioEngine.js";
@@ -43,14 +43,17 @@ keyboardUI.createKeyEventListener(async (keyId) => {
 
   if (!audio.isPrepared()) return;
 
-  const colour = keyboardUI.getKeyColour(keyId) || "#888";
+  const colour = keyboardUI.getKeyColour(keyId) || "#555";
+  const colourmuted = keyboardUI.getKeyColourMuted(keyId) || "#999";
 
   if (sandboxUI.hasBubble(keyId)) {
     sandboxUI.removeBubble(keyId);
     audio.deactivateKey(keyId);
+    keyboardUI.setKeyColour(keyId, colourmuted)
   } else {
     sandboxUI.ensureBubble(keyId, colour);
     audio.activateKey(keyId);
+    keyboardUI.setKeyColour(keyId, colour)
   }
 });
 
@@ -66,10 +69,14 @@ playButton.addEventListener("click", async () => {
 
     // Paint chord keys
     const keyColourMap = new Map();
+    const keyColourMapMuted = new Map();
     keyboardIndices.forEach((idx, i) => {
       keyColourMap.set(String(idx), colours[i % colours.length]);
     });
-    keyboardUI.setChordKeys(keyColourMap);
+    keyboardIndices.forEach((idx, i) => {
+      keyColourMapMuted.set(String(idx), coloursmuted[i % coloursmuted.length]);
+    });
+    keyboardUI.setChordKeys(keyColourMap, keyColourMapMuted);
 
     // Render notation
     const points = keyboardIndices.map((i) => ({

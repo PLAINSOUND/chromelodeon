@@ -101,9 +101,11 @@ function paintKeySolid(keyRect, colour) {
 export function createKeyboardUI({ keyboardContainerEl, getKeyElementById }) {
   // Map keyId -> colour (only these keys are clickable)
   let chordKeyColours = null;
+  let chordKeyColoursMuted = null;
 
-  function setChordKeys(keyColourMap) {
+  function setChordKeys(keyColourMap, keyColourMapMuted) {
     chordKeyColours = keyColourMap;
+    chordKeyColoursMuted = keyColourMapMuted;
     chordKeyColours.forEach((colour, keyId) => {
       paintKeySolid(getKeyElementById(keyId), colour);
     });
@@ -116,6 +118,15 @@ export function createKeyboardUI({ keyboardContainerEl, getKeyElementById }) {
   function getKeyColour(keyId) {
     if (!chordKeyColours) return null;
     return chordKeyColours.get(String(keyId)) || null;
+  }
+
+  function getKeyColourMuted(keyId) {
+    if (!chordKeyColoursMuted) return null;
+    return chordKeyColoursMuted.get(String(keyId)) || null;
+  }
+
+  function setKeyColour(keyId, colour) {
+    paintKeySolid(getKeyElementById(keyId), colour);
   }
 
   // Attach ONE handler to the stable container (not the SVG that gets replaced). [web:200]
@@ -140,6 +151,8 @@ export function createKeyboardUI({ keyboardContainerEl, getKeyElementById }) {
     setChordKeys,
     clearChordKeys,
     getKeyColour,
+    getKeyColourMuted,
+    setKeyColour,
     createKeyEventListener,
   };
 }

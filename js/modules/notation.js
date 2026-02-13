@@ -7,12 +7,21 @@ const viewBoxWidth = 360;
 const viewBoxHeight = 180;
 
 export const colours = [
-  "#357ABD",
-  "#1F8A8F",
-  "#D2644B",
-  "#D39A2C",
-  "#7A57B3",
-  "#3F8F5E",
+  "#026ffe",
+  "#0ebe2c",
+  "#f42323",
+  "#ff9e2f",
+  "#9f2dfc",
+  "#b8b800",
+];
+
+export const coloursmuted = [
+  "#a7c7ef",
+  "#a3f6b2",
+  "#ffb9b9",
+  "#ffe0bc",
+  "#d7b6f2",
+  "#e1e1b7",
 ];
 
 //////////////////////
