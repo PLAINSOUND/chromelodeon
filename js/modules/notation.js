@@ -10,16 +10,16 @@ export const colours = [
   "#026ffe",
   "#0ebe2c",
   "#f42323",
-  "#ff9e2f",
+  "#ff8c09",
   "#9f2dfc",
-  "#b8b800",
+  "#9d9d13",
 ];
 
 export const coloursmuted = [
   "#a7c7ef",
   "#a3f6b2",
-  "#ffb9b9",
-  "#ffe0bc",
+  "#fe8787",
+  "#f9bd79",
   "#d7b6f2",
   "#e1e1b7",
 ];
